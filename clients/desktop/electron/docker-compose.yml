@@ -1,0 +1,9 @@
+services:
+  desktop:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: breach-desktop
+    restart: unless-stopped
+    ports:
+      - "6080:6080"

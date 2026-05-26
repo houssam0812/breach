@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "Breach iOS",
+    "slug": "breach-mobile-ios",
+    "platforms": ["ios"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.breach.ios"
+    }
+  }
+}

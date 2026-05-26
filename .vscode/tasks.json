@@ -119,6 +119,34 @@
 			"command": "git add -A && git status",
 			"isBackground": false,
 			"problemMatcher": []
+		},
+		{
+			"label": "git commit and push",
+			"type": "shell",
+			"command": "git commit -m 'feat: initial breach app — location-based Q&A platform' && git push -u origin master",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "generate personal ssh key",
+			"type": "shell",
+			"command": "ssh-keygen -t ed25519 -C \"houssameddine.abdellaoui@gmail.com\" -f ~/.ssh/id_ed25519_personal -N \"\"",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "configure ssh config",
+			"type": "shell",
+			"command": "cat >> ~/.ssh/config << 'EOF'\n\n# Personal GitHub\nHost github-personal\n  HostName github.com\n  User git\n  IdentityFile ~/.ssh/id_ed25519_personal\n  IdentitiesOnly yes\nEOF\ncat ~/.ssh/config",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "add key to agent and print pubkey",
+			"type": "shell",
+			"command": "ssh-add ~/.ssh/id_ed25519_personal && echo '---' && cat ~/.ssh/id_ed25519_personal.pub",
+			"isBackground": false,
+			"problemMatcher": []
 		}
 	]
 }

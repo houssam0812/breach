@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "Breach Android",
+    "slug": "breach-mobile-android",
+    "platforms": ["android"],
+    "android": {
+      "package": "com.breach.android"
+    }
+  }
+}

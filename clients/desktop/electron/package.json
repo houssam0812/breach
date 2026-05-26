@@ -1,0 +1,12 @@
+{
+  "name": "breach-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/main/main.js",
+  "scripts": {
+    "dev": "electron ."
+  },
+  "dependencies": {
+    "electron": "^31.3.1"
+  }
+}

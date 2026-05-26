@@ -52,6 +52,49 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+## Docker Compose deployment (y50 style)
+
+This project can run with Docker Compose in the same style as other services on y50 (single `docker-compose.yml`, `restart: unless-stopped`, env-file driven config).
+
+### 1. Create runtime env file
+
+Copy `.env.example` to `.env` and set at least:
+
+```env
+POSTGRES_DB="breach"
+POSTGRES_USER="breach"
+POSTGRES_PASSWORD="strong-password"
+NEXTAUTH_URL="http://YOUR_SERVER_IP:3000"
+NEXTAUTH_SECRET="run-openssl-rand-base64-32"
+```
+
+`DATABASE_URL` from `.env` is ignored in compose mode, because compose injects an internal `db` hostname URL automatically.
+
+### 2. Start services
+
+```bash
+docker compose up -d --build
+```
+
+### 3. Check logs
+
+```bash
+docker compose logs -f app
+```
+
+### 4. Stop services
+
+```bash
+docker compose down
+```
+
+### 5. Update deployment
+
+```bash
+git pull
+docker compose up -d --build
+```
+
 ## Database commands
 
 | Command | Description |
