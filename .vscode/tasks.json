@@ -1,0 +1,124 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "npm install",
+			"type": "shell",
+			"command": "npm install",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "prisma generate",
+			"type": "shell",
+			"command": "npm run db:generate",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "prisma db push",
+			"type": "shell",
+			"command": "npm run db:push",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "check postgres",
+			"type": "shell",
+			"command": "pg_isready && psql -U postgres -c 'SELECT version();' 2>&1 || brew services list | grep postgresql",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "brew services list",
+			"type": "shell",
+			"command": "brew services list 2>&1 | head -30",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "check mongodb",
+			"type": "shell",
+			"command": "mongosh --eval 'db.runCommand({ping:1})' 2>&1 | head -5",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "prisma generate (mongodb)",
+			"type": "shell",
+			"command": "npm run db:generate",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "install postgresql",
+			"type": "shell",
+			"command": "brew install postgresql@16 2>&1 | tail -20",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "start postgres and create db",
+			"type": "shell",
+			"command": "brew services start postgresql@16 && sleep 3 && /opt/homebrew/opt/postgresql@16/bin/createdb breach 2>&1 || echo 'db may already exist'",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "create breach db",
+			"type": "shell",
+			"command": "/opt/homebrew/opt/postgresql@16/bin/createdb breach 2>&1 && echo 'created' || echo 'already exists or error'",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "prisma db push",
+			"type": "shell",
+			"command": "npm run db:push 2>&1",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "breach dev server",
+			"type": "shell",
+			"command": "npm run dev",
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "breach dev server",
+			"type": "shell",
+			"command": "npm run dev",
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "rename next config",
+			"type": "shell",
+			"command": "mv next.config.ts next.config.mjs",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "breach dev server",
+			"type": "shell",
+			"command": "npm run dev",
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "git status and remote",
+			"type": "shell",
+			"command": "git status && echo '---' && git remote -v",
+			"isBackground": false,
+			"problemMatcher": []
+		},
+		{
+			"label": "git add all",
+			"type": "shell",
+			"command": "git add -A && git status",
+			"isBackground": false,
+			"problemMatcher": []
+		}
+	]
+}
