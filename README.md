@@ -70,16 +70,24 @@ NEXTAUTH_SECRET="run-openssl-rand-base64-32"
 
 `DATABASE_URL` from `.env` is ignored in compose mode, because compose injects an internal `db` hostname URL automatically.
 
+`NEXT_PUBLIC_API_BASE_URL` should point to a browser-reachable backend URL such as `http://localhost:4000` for local Docker usage. The frontend container uses an internal `API_BASE_URL` value automatically for server-side requests.
+
 ### 2. Start services
 
 ```bash
 docker compose up -d --build
 ```
 
+Compose now starts three services:
+
+- `db`: PostgreSQL
+- `backend`: Express API on port 4000
+- `frontend`: Next.js web app on port 3000
+
 ### 3. Check logs
 
 ```bash
-docker compose logs -f app
+docker compose logs -f backend frontend
 ```
 
 ### 4. Stop services

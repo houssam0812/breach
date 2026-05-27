@@ -1,0 +1,15 @@
+FROM node:20-bookworm
+
+WORKDIR /app
+
+COPY server/api/package*.json ./
+
+RUN npm install
+
+COPY server/api/ ./
+
+RUN npm run build
+
+EXPOSE 4000
+
+CMD ["npm", "run", "start"]
