@@ -8,6 +8,7 @@ REMOTE_DIR="${REMOTE_DIR:-/home/houssam/breach}"
 BRANCH="${BRANCH:-master}"
 FRONTEND_PORT="${FRONTEND_PORT:-3002}"
 BACKEND_PORT="${BACKEND_PORT:-4001}"
+REMOTE_FORCE_SYNC="${REMOTE_FORCE_SYNC:-1}"
 
 if [[ ! -f "$SSH_KEY" ]]; then
   echo "SSH key not found: $SSH_KEY" >&2
@@ -40,7 +41,16 @@ ssh -i "$SSH_KEY" "$SERVER" "
   set -euo pipefail
   cd '$REMOTE_DIR'
   git fetch origin '$BRANCH'
-  git pull --ff-only origin '$BRANCH'
+
+  if [[ '$REMOTE_FORCE_SYNC' == '1' ]]; then
+    # Keep deploy directory deterministic: no local drift, no merge conflicts.
+    git checkout '$BRANCH'
+    git reset --hard 'origin/$BRANCH'
+    git clean -fd -e .env -e .env.local -e .env.production
+  else
+    git pull --ff-only origin '$BRANCH'
+  fi
+
   FRONTEND_PORT='$FRONTEND_PORT' BACKEND_PORT='$BACKEND_PORT' docker compose up -d --build --remove-orphans
   docker compose ps
 "
