@@ -1,6 +1,7 @@
 FROM node:20-bookworm
 
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_ENV=production
 
 WORKDIR /app
 
@@ -11,9 +12,8 @@ RUN npm ci
 
 COPY . .
 
-RUN npx prisma generate
+RUN npx prisma generate && npm run build
 
 EXPOSE 3000
 
-# Apply schema, then run Next.js in dev mode for local frontend/backend testing.
-CMD ["sh", "-c", "npx prisma db push && npm run dev -- --hostname 0.0.0.0 --port 3000"]
+CMD ["sh", "-c", "npx prisma db push && npm start"]
