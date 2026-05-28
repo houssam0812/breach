@@ -33,6 +33,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       where: {
         OR: [
           { title: { contains: q, mode: "insensitive" } },
+          { topic: { contains: q, mode: "insensitive" } },
           { body: { contains: q, mode: "insensitive" } },
         ],
       },

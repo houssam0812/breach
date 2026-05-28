@@ -39,8 +39,8 @@ export function AnswerForm({ postId, onAnswerAdded }: AnswerFormProps) {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (body.trim().length < 20) {
-      setError("Answer must be at least 20 characters.");
+    if (body.trim().length < 5) {
+      setError("Answer must be at least 5 characters.");
       return;
     }
 

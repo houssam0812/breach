@@ -52,10 +52,18 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
         token.username = (user as { username?: string }).username ?? "";
+      }
+      // Re-check location on sign-in OR when session is explicitly updated
+      if (user || trigger === "update") {
+        const dbUser = await db.user.findUnique({
+          where: { id: token.id as string },
+          select: { lastKnownLat: true },
+        });
+        token.hasLocation = dbUser?.lastKnownLat != null;
       }
       return token;
     },
@@ -63,6 +71,7 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user.id = token.id as string;
         session.user.username = token.username as string;
+        session.user.hasLocation = token.hasLocation as boolean ?? false;
       }
       return session;
     },

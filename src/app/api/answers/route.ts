@@ -6,7 +6,7 @@ import { z } from "zod";
 
 const createAnswerSchema = z.object({
   postId: z.string(),
-  body: z.string().min(20),
+  body: z.string().min(5),
 });
 
 export async function POST(req: NextRequest) {

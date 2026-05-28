@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "leaflet/dist/leaflet.css";
 import { Providers } from "@/components/layout/Providers";
 import { Navbar } from "@/components/layout/Navbar";
+import { NavigationPanel } from "@/components/layout/NavigationPanel";
+import { LocationPermissionBanner } from "@/components/layout/LocationPermissionBanner";
 
 export const metadata: Metadata = {
   title: {
@@ -22,7 +25,9 @@ export default function RootLayout({
       <body className="bg-breach-dark text-breach-text min-h-screen">
         <Providers>
           <Navbar />
-          <main className="pt-12">{children}</main>
+          <NavigationPanel />
+          <LocationPermissionBanner />
+          <main className="pt-12 md:pl-[88px] pb-[76px] md:pb-0">{children}</main>
         </Providers>
       </body>
     </html>

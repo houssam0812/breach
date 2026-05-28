@@ -3,11 +3,13 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { slugify } from "@/lib/utils";
+import { encodeGeohash6 } from "@/lib/location-utils";
 import { z } from "zod";
 
 const createPostSchema = z.object({
-  title: z.string().min(10).max(300),
-  body: z.string().min(20),
+  title: z.string().min(5).max(300),
+  topic: z.string().min(2).max(40),
+  body: z.string().min(5),
   location: z.object({
     name: z.string().min(1),
     address: z.string(),
@@ -15,6 +17,8 @@ const createPostSchema = z.object({
     country: z.string().nullable(),
     lat: z.number(),
     lng: z.number(),
+    suburb: z.string().nullable().optional(),
+    neighbourhood: z.string().nullable().optional(),
   }),
 });
 
@@ -68,9 +72,39 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { title, body: postBody, location } = parsed.data;
+  const { title, topic, body: postBody, location } = parsed.data;
 
-  // Find or create location
+  const geohash6 = encodeGeohash6(location.lat, location.lng);
+
+  // Resolve neighbourhood parent location
+  const neighbourhoodName =
+    location.suburb || location.neighbourhood || null;
+  let parentLocationId: string | null = null;
+
+  if (neighbourhoodName) {
+    const parentSlug = slugify(
+      `${neighbourhoodName} ${location.city || location.country || ""}`
+    ).slice(0, 60);
+    const parent = await db.location.upsert({
+      where: { slug: parentSlug },
+      create: {
+        name: neighbourhoodName,
+        address: [location.city, location.country].filter(Boolean).join(", "),
+        city: location.city,
+        country: location.country,
+        lat: location.lat,
+        lng: location.lng,
+        slug: parentSlug,
+        level: "NEIGHBOURHOOD",
+        geohash6,
+        suburb: neighbourhoodName,
+      },
+      update: {},
+    });
+    parentLocationId = parent.id;
+  }
+
+  // Find or create place-level location
   const baseSlug = slugify(`${location.name} ${location.city || ""}`).slice(0, 60);
   let locationSlug = baseSlug;
 
@@ -90,9 +124,17 @@ export async function POST(req: NextRequest) {
       lat: location.lat,
       lng: location.lng,
       slug: locationSlug,
+      level: "PLACE",
+      geohash6,
+      suburb: location.suburb ?? null,
+      neighbourhood: location.neighbourhood ?? null,
+      ...(parentLocationId ? { parentId: parentLocationId } : {}),
     },
     update: {
       postCount: { increment: 1 },
+      // Backfill geohash6 and parentId if missing on existing record
+      geohash6: geohash6,
+      ...(parentLocationId ? { parentId: parentLocationId } : {}),
     },
   });
 
@@ -107,6 +149,7 @@ export async function POST(req: NextRequest) {
   const post = await db.post.create({
     data: {
       title,
+      topic: topic.trim().toLowerCase(),
       body: postBody,
       authorId: session.user.id,
       locationId: locationRecord.id,

@@ -16,6 +16,8 @@ export interface NominatimResult {
     country?: string;
     suburb?: string;
     neighbourhood?: string;
+    district?: string;
+    borough?: string;
   };
 }
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { MapPin, PlusCircle, LogIn, LogOut, User, Search } from "lucide-react";
+import { MapPin, Map, PlusCircle, LogIn, LogOut, User, Search } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -45,6 +45,13 @@ export function Navbar() {
 
       {/* Actions */}
       <div className="flex items-center gap-2 shrink-0 ml-auto">
+        <Link
+          href="/map"
+          className="flex items-center gap-1.5 text-breach-text-muted hover:text-breach-text text-sm px-2 py-1.5 rounded transition-colors"
+        >
+          <Map className="w-4 h-4" />
+          <span className="hidden sm:inline">Map</span>
+        </Link>
         {session ? (
           <>
             <Link

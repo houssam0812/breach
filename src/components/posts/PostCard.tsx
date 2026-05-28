@@ -7,6 +7,7 @@ interface PostCardProps {
   post: {
     id: string;
     title: string;
+    topic?: string;
     body: string;
     score: number;
     createdAt: Date | string;
@@ -36,7 +37,7 @@ export function PostCard({ post, userVote }: PostCardProps) {
       {/* Content */}
       <div className="flex-1 p-3 min-w-0">
         {/* Location tag */}
-        <div className="mb-1.5">
+        <div className="mb-1.5 flex flex-wrap items-center gap-2">
           <Link
             href={`/locations/${post.location.slug}`}
             className="inline-flex items-center gap-1 text-xs text-breach-blue-light hover:underline"
@@ -45,6 +46,11 @@ export function PostCard({ post, userVote }: PostCardProps) {
             {post.location.name}
             {post.location.city ? `, ${post.location.city}` : ""}
           </Link>
+          {post.topic && (
+            <span className="inline-flex items-center rounded-full border border-breach-orange/30 bg-breach-orange/10 px-2 py-0.5 text-[11px] font-medium text-breach-orange">
+              {post.topic}
+            </span>
+          )}
         </div>
 
         {/* Title */}

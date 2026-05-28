@@ -5,6 +5,20 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum LocationLevel {
+  PLACE
+  NEIGHBOURHOOD
+  CITY
+  REGION
+  COUNTRY
+}
+
+enum PostVisibility {
+  PUBLIC
+  NEIGHBOURHOOD
+  SUBSCRIBERS_ONLY
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -18,9 +32,13 @@ model User {
   image         String?
   password      String?
   username      String    @unique
-  bio           String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  bio              String?
+  lastKnownLat     Float?
+  lastKnownLng     Float?
+  lastLocationAt   DateTime?
+  geohash6         String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 
   accounts      Account[]
   sessions      Session[]
@@ -75,28 +93,40 @@ model Location {
   country     String?
   lat         Float
   lng         Float
-  slug        String   @unique
-  description String?
-  postCount   Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  slug          String        @unique
+  description   String?
+  postCount     Int           @default(0)
+  level         LocationLevel @default(PLACE)
+  parentId      String?
+  geohash6      String?
+  suburb        String?
+  neighbourhood String?
+  polygon       Json?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   posts         Post[]
   subscriptions LocationSubscription[]
+  parent        Location?  @relation("LocationHierarchy", fields: [parentId], references: [id])
+  children      Location[] @relation("LocationHierarchy")
 
   @@index([slug])
   @@index([lat, lng])
+  @@index([geohash6])
+  @@index([parentId])
 }
 
 model Post {
   id         String   @id @default(cuid())
   title      String
+  topic      String   @default("general")
   body       String   @db.Text
   authorId   String
   locationId String
-  score      Int      @default(0)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  score      Int            @default(0)
+  visibility PostVisibility @default(NEIGHBOURHOOD)
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
 
   author   User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   location Location @relation(fields: [locationId], references: [id])
@@ -105,6 +135,8 @@ model Post {
 
   @@index([locationId])
   @@index([authorId])
+  @@index([topic])
+  @@index([visibility])
   @@index([createdAt(sort: Desc)])
   @@index([score(sort: Desc)])
 }
