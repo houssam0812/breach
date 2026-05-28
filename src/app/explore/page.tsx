@@ -2,6 +2,8 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Explore topics",
 };
