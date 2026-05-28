@@ -77,7 +77,6 @@ export function LocationPermissionBanner() {
       },
       () => {
         // Permission denied or error — dismiss banner
-        localStorage.setItem(STORAGE_KEY, "denied");
         setVisible(false);
       }
     );

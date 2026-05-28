@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { db } from "@/lib/db";
 
 export async function GET() {
   const neighbourhoods = await db.location.findMany({
     where: {
       level: "NEIGHBOURHOOD",
-      polygon: { not: null },
+      NOT: { polygon: { equals: Prisma.AnyNull } },
     },
     select: {
       id: true,
