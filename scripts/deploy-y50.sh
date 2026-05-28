@@ -6,8 +6,7 @@ SERVER="${SERVER:-houssam@y50.taile4b97d.ts.net}"
 SSH_KEY="${SSH_KEY:-$HOME/.ssh/id_ed25519_personal}"
 REMOTE_DIR="${REMOTE_DIR:-/home/houssam/breach}"
 BRANCH="${BRANCH:-master}"
-FRONTEND_PORT="${FRONTEND_PORT:-3002}"
-BACKEND_PORT="${BACKEND_PORT:-4001}"
+APP_PORT="${APP_PORT:-3003}"
 REMOTE_FORCE_SYNC="${REMOTE_FORCE_SYNC:-1}"
 
 if [[ ! -f "$SSH_KEY" ]]; then
@@ -51,6 +50,6 @@ ssh -i "$SSH_KEY" "$SERVER" "
     git pull --ff-only origin '$BRANCH'
   fi
 
-  FRONTEND_PORT='$FRONTEND_PORT' BACKEND_PORT='$BACKEND_PORT' docker compose up -d --build --remove-orphans
+  APP_PORT='$APP_PORT' docker compose up -d --build --remove-orphans
   docker compose ps
 "
